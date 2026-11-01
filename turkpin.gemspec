@@ -3,7 +3,7 @@ require_relative "lib/turkpin/version"
 Gem::Specification.new do |s|
   s.name = "turkpin"
   s.version = Turkpin::VERSION
-  s.summary = "Ruby client for the Turkpin dealer (bayi) API"
+  s.summary = "Ruby client for the Turkpin dealer (bayi) API with Rails integration"
   s.description = "E-pin games, products, orders and balance through the Turkpin dealer API."
   s.authors = ["Erol Bulut"]
   s.homepage = "https://github.com/buluterol/turkpin-ruby"

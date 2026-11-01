@@ -183,3 +183,6 @@ module Turkpin
     end
   end
 end
+
+require_relative "turkpin/configuration"
+require_relative "turkpin/railtie" if defined?(Rails::Railtie)

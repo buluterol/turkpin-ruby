@@ -2,7 +2,7 @@
 
 [![test](https://github.com/buluterol/turkpin-ruby/actions/workflows/test.yml/badge.svg)](https://github.com/buluterol/turkpin-ruby/actions/workflows/test.yml)
 
-Turkpin bayi API'si için Ruby istemcisi: e-pin oyun ve ürün listesi, sipariş verme, sipariş durumu, sipariş listesi ve bakiye.
+Turkpin bayi API'si için Ruby istemcisi; Rails entegrasyonu dahil: e-pin oyun ve ürün listesi, sipariş verme, sipariş durumu, sipariş listesi ve bakiye.
 
 > Bu paket topluluk tarafından yazılmıştır; Turkpin'in resmi paketi değildir. API'nin güncel ve bağlayıcı tanımı için [dev.turkpin.com](https://dev.turkpin.com) dokümanına bakın.
 
@@ -43,6 +43,46 @@ end
 puts tp.balance.balance # BigDecimal
 ```
 
+## Paylaşılan istemci
+
+```ruby
+Turkpin.configure do |c|
+  c.username = ENV["TURKPIN_USERNAME"]
+  c.password = ENV["TURKPIN_PASSWORD"]
+  c.test = true
+end
+
+Turkpin.client.games
+```
+
+Ayar verilmezse `TURKPIN_USERNAME`, `TURKPIN_PASSWORD`, `TURKPIN_TEST` ve `TURKPIN_TIMEOUT` ortam değişkenleri kullanılır.
+
+## Rails
+
+Gem Rails ile birlikte yüklendiğinde Railtie ayarları sırasıyla `config.turkpin`, credentials (`turkpin:` anahtarı) ve ortam değişkenlerinden okur.
+
+```sh
+bin/rails credentials:edit
+```
+
+```yaml
+turkpin:
+  username: ...
+  password: ...
+  test: false
+```
+
+```ruby
+class OrdersController < ApplicationController
+  def create
+    order = Turkpin.client.create_order(game_id: params[:game_id].to_i, product_id: params[:product_id].to_i)
+    render json: { order_no: order.order_no, pending: order.pending? }
+  end
+end
+```
+
+Sinatra, Hanami ve düz Ruby projelerinde `Turkpin.configure` ile aynı şekilde kullanılır.
+
 ## Desteklenen komutlar
 
 | API komutu | Açıklama |
@@ -73,13 +113,13 @@ Listede olmayan komutlar için istemcideki genel `call` metodu kullanılabilir.
 Testler gerçek API'ye bağlanmaz; örnek XML cevaplarıyla çalışır.
 
 ```sh
-bundle install
+bundle install            # Rails testleri için: BUNDLE_WITH=rails bundle install
 bundle exec rake test
 ```
 
 ## English
 
-Ruby client for the Turkpin dealer API (e-pin games, products, orders, order status, order history, balance). Community-maintained, not an official Turkpin package; see [dev.turkpin.com](https://dev.turkpin.com) for the authoritative API reference. The sandbox (`turkpin.net`) only accepts requests from server IP addresses registered with Turkpin (otherwise error `002`). Install and usage are shown above; method names are in English, while API command and field names follow the original Turkish API.
+Ruby client for the Turkpin dealer API with Rails integration (e-pin games, products, orders, order status, order history, balance). Community-maintained, not an official Turkpin package; see [dev.turkpin.com](https://dev.turkpin.com) for the authoritative API reference. The sandbox (`turkpin.net`) only accepts requests from server IP addresses registered with Turkpin (otherwise error `002`). Install and usage are shown above; method names are in English, while API command and field names follow the original Turkish API.
 
 ## Lisans
 
